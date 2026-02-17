@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wallet/src/reusables/models/exception/api_exception.dart';
 
@@ -46,7 +47,7 @@ class ApiClient {
 
   void _log(String message) {
     if (!config.shouldLog) return;
-    _log('[API] $message');
+    debugPrint('[API] $message');
   }
 
   Future<T> _send<T>(

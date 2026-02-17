@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -113,6 +114,9 @@ class TransactionProvider extends BaseProvider {
       debugPrint(
         '[TransactionProvider] Saved ${_allTransactions.length} transactions to storage',
       );
+      _allTransactions.forEach(
+        (each) => log(each.amount, name: "amount ${each.name}"),
+      );
     } catch (e) {
       debugPrint('[TransactionProvider] Error saving transactions: $e');
     }
@@ -172,7 +176,7 @@ class TransactionProvider extends BaseProvider {
     required bool isCredit,
     required int amount,
   }) {
-    final amountInDecimal = (amount / 100).toStringAsFixed(2);
+    final amountInDecimal = amount.toStringAsFixed(2);
     final now = DateTime.now();
     final dateString = '${_monthName(now.month)} ${now.day}, ${now.year}';
 
