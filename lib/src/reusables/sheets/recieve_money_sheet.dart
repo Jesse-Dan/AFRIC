@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/src/config/color_config.dart';
+import 'package:wallet/src/providers/transaction_provider.dart';
 import 'package:wallet/src/reusables/components/app_buttom_sheet.dart';
 import 'package:wallet/src/reusables/components/app_text_field.dart';
+import 'package:wallet/src/reusables/utils/show_text.dart';
 
-class ReceiveFundsSheet extends StatefulWidget {
+class ReceiveFundsSheet extends ConsumerStatefulWidget {
   const ReceiveFundsSheet({super.key});
 
   @override
-  State<ReceiveFundsSheet> createState() => _ReceiveFundsSheetState();
+  ConsumerState<ReceiveFundsSheet> createState() => _ReceiveFundsSheetState();
 }
 
-class _ReceiveFundsSheetState extends State<ReceiveFundsSheet> {
+class _ReceiveFundsSheetState extends ConsumerState<ReceiveFundsSheet> {
   final TextEditingController _amountController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -29,14 +33,31 @@ class _ReceiveFundsSheetState extends State<ReceiveFundsSheet> {
     super.dispose();
   }
 
-  void _handleReceive() {
+  Future<void> _handleReceive() async {
     final amount = double.tryParse(_amountController.text);
-    if (amount != null && amount > 0) {
-      Navigator.pop(context, amount);
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Please enter a valid amount')));
+
+    if (amount == null || amount <= 0) {
+      showText('Please enter a valid amount');
+      return;
+    }
+
+    setState(() => _isProcessing = true);
+
+    try {
+      await ref.read(transactionProvider).credit(amount.toInt());
+
+      if (mounted) {
+        Navigator.pop(context, amount);
+        showText('Successfully received ₦$amount');
+      }
+    } catch (e) {
+      if (mounted) {
+        showText('Failed to receive money: $e');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessing = false);
+      }
     }
   }
 
@@ -59,13 +80,13 @@ class _ReceiveFundsSheetState extends State<ReceiveFundsSheet> {
                   color: Colors.green.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.arrow_downward_rounded,
                   color: Colors.green,
                   size: 24,
                 ),
               ),
-              SizedBox(width: 16),
+              const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +101,7 @@ class _ReceiveFundsSheetState extends State<ReceiveFundsSheet> {
                             : ColorConfig.textDark,
                       ),
                     ),
-                    Text(
+                    const Text(
                       'Enter amount to receive',
                       style: TextStyle(
                         fontSize: 14,
@@ -91,49 +112,66 @@ class _ReceiveFundsSheetState extends State<ReceiveFundsSheet> {
                 ),
               ),
               IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(Icons.close, color: ColorConfig.textSecondary),
+                onPressed: _isProcessing ? null : () => Navigator.pop(context),
+                icon: const Icon(Icons.close, color: ColorConfig.textSecondary),
               ),
             ],
           ),
-          SizedBox(height: 32),
+          const SizedBox(height: 32),
           AppTextField(
             controller: _amountController,
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            focusNode: _focusNode,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             label: 'Amount',
             hintText: '0.00',
             prefixIcon: Icons.send,
+            enabled: !_isProcessing,
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           QuickAmountButtons(
             onAmountSelected: (amount) {
-              _amountController.text = amount.toString();
+              if (!_isProcessing) {
+                _amountController.text = amount.toString();
+              }
             },
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              onPressed: _handleReceive,
+              onPressed: _isProcessing ? null : _handleReceive,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 foregroundColor: Colors.white,
                 elevation: 0,
+                disabledBackgroundColor: Colors.green.withOpacity(0.5),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.arrow_downward_rounded),
-                  SizedBox(width: 8),
-                  Text(
-                    'Request Money',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
+              child: _isProcessing
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.arrow_downward_rounded),
+                        SizedBox(width: 8),
+                        Text(
+                          'Request Money',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
             ),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
         ],
       ),
     );

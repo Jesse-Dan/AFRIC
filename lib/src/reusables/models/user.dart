@@ -64,7 +64,9 @@ class User extends Equatable {
       id: json["id"],
       name: json["name"],
       email: json["email"],
-      emailVerifiedAt: DateTime.tryParse(json["email_verified_at"] ?? ""),
+      emailVerifiedAt: json["email_verified_at"] == null
+          ? null
+          : DateTime.tryParse(json["email_verified_at"] ?? ""),
       currency: json["currency"],
       createdAt: DateTime.tryParse(json["created_at"] ?? ""),
       updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),

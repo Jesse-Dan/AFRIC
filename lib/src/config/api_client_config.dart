@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:wallet/src/reusables/models/exception/api_exception.dart';
@@ -119,7 +118,6 @@ class ApiClient {
         return config.onResponse != null ? config.onResponse!(data) : data;
       }
 
-      // Error
       _log('❌ ERROR');
       _log('═══════════════════════════════════════════════════════');
       _log('');
@@ -174,7 +172,6 @@ class ApiClient {
   }) {
     final request = http.Request('POST', _buildUri(url))
       ..body = jsonEncode(body);
-    log(request.body, name: "BODY");
     return _send<T>(request, fromJson: fromJson, headers: headers);
   }
 

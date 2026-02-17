@@ -11,6 +11,7 @@ class SearchField extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
+      margin: EdgeInsets.only(bottom: 24),
       decoration: BoxDecoration(
         color: isDark ? ColorConfig.surfaceDark : ColorConfig.surfaceLight,
         borderRadius: BorderRadius.circular(12),

@@ -22,8 +22,8 @@ class StorageUtil {
     throw Exception('Unsupported type');
   }
 
-  T? get<T>(String key) {
-    if (_prefs == null) throw Exception('SharedPreferences not initialized');
+  Future<T?> get<T>(String key) async {
+    if (_prefs == null) await init();
 
     final value = _prefs!.get(key);
     if (value is T) return value;

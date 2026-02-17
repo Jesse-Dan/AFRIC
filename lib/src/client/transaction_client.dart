@@ -1,6 +1,5 @@
 import 'package:wallet/src/config/api_client_config.dart';
 import 'package:wallet/src/config/utils_config.dart';
-import 'package:wallet/src/reusables/models/request/jornal_entry.dart';
 import 'package:wallet/src/reusables/utils/storage_util.dart';
 
 class TransactionClient extends ApiClient {
@@ -22,23 +21,23 @@ class TransactionClient extends ApiClient {
       );
 
   Future<T> debit<T>({
-    required JournalEntry journalEntry,
+    required int amount,
     required T Function(Map<String, dynamic> json) fromJson,
   }) {
     return post<T>(
       '/account/debit',
-      body: journalEntry.toJson(),
+      body: {"amount": amount},
       fromJson: fromJson,
     );
   }
 
   Future<T> credit<T>({
-    required JournalEntry journalEntry,
+    required int amount,
     required T Function(Map<String, dynamic> json) fromJson,
   }) {
     return post<T>(
       '/account/credit',
-      body: journalEntry.toJson(),
+      body: {"amount": amount},
       fromJson: fromJson,
     );
   }

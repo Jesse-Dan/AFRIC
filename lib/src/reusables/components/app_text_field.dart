@@ -10,6 +10,8 @@ class AppTextField extends StatelessWidget {
   final IconData? prefixIcon;
   final Widget? suffixIcon;
   final String? Function(String?)? validator;
+  final FocusNode? focusNode;
+  final bool enabled;
 
   const AppTextField({
     super.key,
@@ -21,6 +23,8 @@ class AppTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.validator,
+    this.focusNode,
+    this.enabled = true,
   });
 
   @override
@@ -40,6 +44,8 @@ class AppTextField extends StatelessWidget {
         ),
         SizedBox(height: 8),
         TextFormField(
+          focusNode: focusNode,
+          enabled: enabled,
           validator: validator,
           controller: controller,
           obscureText: obscureText,

@@ -1,15 +1,22 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:wallet/src/config/color_config.dart';
 import 'package:wallet/src/modules/home/model/transaction_item.dart';
+import 'package:wallet/src/providers/auth_provider.dart';
 
-class TransactionListItem extends StatelessWidget {
+class TransactionListItem extends ConsumerWidget {
   final TransactionItem transaction;
 
   const TransactionListItem({super.key, required this.transaction});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final authProv = ref.watch(authProvider);
+
+    final currency = authProv.user?.account?.currency ?? 'NGN';
 
     return Material(
       color: Colors.transparent,
@@ -70,7 +77,7 @@ class TransactionListItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '${transaction.isCredit ? '+' : '-'}\$${transaction.amount}',
+                    '${transaction.isCredit ? '+' : '-'} $currency ${transaction.amount}',
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,

@@ -19,10 +19,12 @@ class HomeView extends StatelessWidget {
 
     var authProv = ProviderHelper.watch(authProvider);
     var username = authProv.user?.name ?? 'User';
+    var accountNumber = authProv.user?.account?.accountNumber ?? '0000000000';
 
     return Scaffold(
       appBar: SimpleAppBar(
         title: "Hi $username 👋🏾",
+        subtitle: accountNumber,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
           child: CircleAvatar(
@@ -69,7 +71,13 @@ class HomeView extends StatelessWidget {
           ),
         ),
       ),
-      body: ListView(children: [HomeContentWidget()]),
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async {
+          await authProv.refresh();
+          await authProv.getUserDetails();
+        },
+        child: ListView(children: [HomeContentWidget()]),
+      ),
     );
   }
 }

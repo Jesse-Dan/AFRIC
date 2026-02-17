@@ -1,24 +1,35 @@
-# Technical Assessment Summary
+# Wallet App - ACCESSMENT
 
-## What I Completed
+Flutter wallet app — auth, balance tracking, and fund transfers.
 
-- Implemented authentication flow using Riverpod (login, logout, persistent session loading).
-- Built a BaseProvider architecture for state management and API handling.
-- Build a Beautiful UI to compliment app context
+## Stack
 
-## Challenges / What I Couldn’t Fully Complete
+- Flutter · Riverpod · SharedPreferences · HTTP
 
-- Did not fully migrate to an immutable StateNotifier architecture due to time constraints.
-- End-to-end testing and edge-case handling (e.g., race conditions on startup) were limited.
+## Features
 
-## Notes
+- Login / register / logout with persistent session
+- Live balance updates after every transaction
+- Send and receive funds
+- Transaction history cached locally
+- Light / dark theme that persists across launches
 
-Given more time, I would:
+## Getting Started
 
-- Refactor ChangeNotifier to StateNotifier for predictable state management.
-- Add secure storage (flutter_secure_storage) for tokens.
-- Implement automatic token refresh with Dio interceptors.
-- Add integration and unit tests for auth flow.
-- Integrated local storage for user and token persistence.
-- Added error handling and debug logging utilities.
-# AFRIC
+```bash
+flutter pub get
+flutter run
+```
+
+## Structure
+
+```
+lib/
+├── src/
+│   ├── client/       # API clients
+│   ├── config/       # Theme, routes, colors
+│   ├── modules/      # Screens
+│   ├── providers/    # State management
+│   └── reusables/    # Models, components, utils
+└── main.dart
+```

@@ -52,7 +52,6 @@ void showText(String text, {Duration? duration, bool isError = false}) {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // Icon
                             Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
@@ -264,7 +263,6 @@ void showError(String text, {Duration? duration}) {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Left colored bar
                     Container(
                       width: 4,
                       decoration: BoxDecoration(
