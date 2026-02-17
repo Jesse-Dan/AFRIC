@@ -114,9 +114,9 @@ class TransactionProvider extends BaseProvider {
       debugPrint(
         '[TransactionProvider] Saved ${_allTransactions.length} transactions to storage',
       );
-      _allTransactions.forEach(
-        (each) => log(each.amount, name: "amount ${each.name}"),
-      );
+      // _allTransactions.forEach(
+      //   (each) => log(each.amount, name: "amount ${each.name}"),
+      // );
     } catch (e) {
       debugPrint('[TransactionProvider] Error saving transactions: $e');
     }
